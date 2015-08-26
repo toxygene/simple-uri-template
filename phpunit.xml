@@ -1,0 +1,15 @@
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+    <testsuite name="Simple URI Template Library Test Suite">
+        <directory>./tests</directory>
+    </testsuite>
+    <filter>
+        <blacklist>
+            <directory>./tests</directory>
+            <directory>./vendor</directory>
+        </blacklist>
+    </filter>
+    <php>
+        <ini name="display_startup_errors" value="1" />
+        <ini name="display_errors" value="1" />
+    </php>
+</phpunit>
