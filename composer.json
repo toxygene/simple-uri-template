@@ -1,0 +1,15 @@
+{
+    "name": "toxygene/simple-uri-template",
+    "require": {
+        "doctrine/lexer": "^1.0"
+    },
+    "authors": [
+        {
+            "name": "Justin Hendrickson",
+            "email": "justin.hendrickson@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"SimpleUriTemplate\\": "src/"}
+    }
+}
