@@ -1,9 +1,0 @@
-                <template> ::= <placeholder> <template> | <literal> <template>
-             <placeholder> ::= "{" <identifier> "}"
-              <identifier> ::= <ascii-letter> | <ascii-letter> <ascii-letters-or-numbers>
-<ascii-letters-or-numbers> ::= <ascii-letter-or-number> | <ascii-letter-or-number> <ascii-letters-or-numbers>
-  <ascii-letter-or-number> ::= <ascii-letter> | <assci-number>
-            <ascii-letter> ::= "a-z" | "A-Z"
-            <ascii-number> ::= "0-9"
-                 <literal> ::= <literal-character> | <literal-charcater> <literal-characters>
-       <literal-character> ::= [everything except {]
