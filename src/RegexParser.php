@@ -48,7 +48,7 @@ class RegexParser
             }
         }
 
-        return "#{$regex}#";
+        return "#^{$regex}$#";
     }
 
     /**

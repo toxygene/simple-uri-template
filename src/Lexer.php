@@ -28,13 +28,24 @@ class Lexer extends AbstractLexer
     private $inPlaceholder = false;
 
     /**
+     * Set the in placeholder flag
+     *
+     * @param boolean $inPlaceholder
+     * @return $this
+     */
+    public function setInPlaceholder($inPlaceholder)
+    {
+        $this->inPlaceholder = $inPlaceholder;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getCatchablePatterns()
     {
         return [
-            '[^{}]*',
-            '[a-zA-Z][a-zA-Z][0-9]+'
+            '[^{}]+'
         ];
     }
 
