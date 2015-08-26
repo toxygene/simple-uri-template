@@ -1,9 +1,5 @@
 {
     "name": "toxygene/simple-uri-template",
-    "require": {
-        "doctrine/lexer": "^1.0",
-        "phpunit/phpunit": "^4.8"
-    },
     "authors": [
         {
             "name": "Justin Hendrickson",
@@ -12,5 +8,14 @@
     ],
     "autoload": {
         "psr-4": {"SimpleUriTemplate\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"SimpleUriTemplate\\Test\\": "tests"}
+    },
+    "require": {
+        "doctrine/lexer": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
     }
 }
