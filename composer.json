@@ -1,7 +1,8 @@
 {
     "name": "toxygene/simple-uri-template",
     "require": {
-        "doctrine/lexer": "^1.0"
+        "doctrine/lexer": "^1.0",
+        "phpunit/phpunit": "^4.8"
     },
     "authors": [
         {
