@@ -10,12 +10,21 @@ use Symfony\Component\Yaml\Exception\ParseException;
 class UriParser
 {
 
+    /**
+     * Template language lexer
+     *
+     * @var Lexer
+     */
     private $lexer;
 
-    public function __construct($template)
+    /**
+     * Constructor
+     *
+     * @param Lexer $lexer
+     */
+    public function __construct(Lexer $lexer)
     {
-        $this->lexer = new Lexer();
-        $this->lexer->setInput($template);
+        $this->lexer = $lexer;
     }
 
     /**

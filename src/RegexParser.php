@@ -17,12 +17,11 @@ class RegexParser
     /**
      * Constructor
      *
-     * @param string $template
+     * @param Lexer $lexer
      */
-    public function __construct($template)
+    public function __construct(Lexer $lexer)
     {
-        $this->lexer = new Lexer();
-        $this->lexer->setInput($template);
+        $this->lexer = $lexer;
     }
 
     /**
