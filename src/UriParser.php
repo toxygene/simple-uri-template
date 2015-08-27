@@ -10,22 +10,34 @@ use Symfony\Component\Yaml\Exception\ParseException;
 class UriParser
 {
 
+    /**
+     * Template language lexer
+     *
+     * @var Lexer
+     */
     private $lexer;
 
-    public function __construct($template)
+    /**
+     * Constructor
+     *
+     * @param Lexer $lexer
+     */
+    public function __construct(Lexer $lexer)
     {
-        $this->lexer = new Lexer();
-        $this->lexer->setInput($template);
+        $this->lexer = $lexer;
     }
 
     /**
      * Parse the template to a URI
      *
+     * @param string $template
      * @param array $parameters
      * @return string
      */
-    public function parse($parameters = [])
+    public function parse($template, $parameters = [])
     {
+        $this->lexer->setInput($template);
+
         $url = '';
 
         while ($this->lexer->moveNext()) {

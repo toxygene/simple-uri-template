@@ -2,6 +2,7 @@
 namespace SimpleUriTemplate\Tests;
 
 use PHPUnit_Framework_TestCase;
+use SimpleUriTemplate\Lexer;
 use SimpleUriTemplate\UriParser;
 
 /**
@@ -13,20 +14,33 @@ class UriParserTest extends PHPUnit_Framework_TestCase
 {
 
     /**
+     * Regex parser
+     *
+     * @var UriParser
+     */
+    private $parser;
+
+    /**
+     * Setup the test case
+     */
+    public function setUp()
+    {
+        $this->parser = new UriParser(new Lexer());
+    }
+
+    /**
      * Test that the regex is created for a template with no placeholders
      *
      * @covers ::parse
      */
     public function testRegexIsCreatedForTemplateWithNoPlaceholders()
     {
-        $parser = new UriParser('/one/two');
-        $this->assertEquals('/one/two', $parser->parse());
+        $this->assertEquals('/one/two', $this->parser->parse('/one/two'));
     }
 
     public function testTest()
     {
-        $parser = new UriParser('/one/{two}/{three}');
-        $this->assertEquals('/one/2/3', $parser->parse(['two' => 2, 'three' => 3]));
+        $this->assertEquals('/one/2/3', $this->parser->parse('/one/{two}/{three}', ['two' => 2, 'three' => 3]));
     }
 
 }
