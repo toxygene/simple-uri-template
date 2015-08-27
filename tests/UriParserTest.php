@@ -14,13 +14,6 @@ class UriParserTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * Template language lexer
-     *
-     * @var Lexer
-     */
-    private $lexer;
-
-    /**
      * Regex parser
      *
      * @var UriParser
@@ -32,8 +25,7 @@ class UriParserTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->lexer = new Lexer();
-        $this->parser = new UriParser($this->lexer);
+        $this->parser = new UriParser(new Lexer());
     }
 
     /**
@@ -43,14 +35,12 @@ class UriParserTest extends PHPUnit_Framework_TestCase
      */
     public function testRegexIsCreatedForTemplateWithNoPlaceholders()
     {
-        $this->lexer->setInput('/one/two');
-        $this->assertEquals('/one/two', $this->parser->parse());
+        $this->assertEquals('/one/two', $this->parser->parse('/one/two'));
     }
 
     public function testTest()
     {
-        $this->lexer->setInput('/one/{two}/{three}');
-        $this->assertEquals('/one/2/3', $this->parser->parse(['two' => 2, 'three' => 3]));
+        $this->assertEquals('/one/2/3', $this->parser->parse('/one/{two}/{three}', ['two' => 2, 'three' => 3]));
     }
 
 }

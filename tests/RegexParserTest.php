@@ -14,13 +14,6 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * Template language lexer
-     *
-     * @var Lexer
-     */
-    private $lexer;
-
-    /**
      * Regex parser
      *
      * @var RegexParser
@@ -32,8 +25,7 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->lexer = new Lexer();
-        $this->parser = new RegexParser($this->lexer);
+        $this->parser = new RegexParser(new Lexer());
     }
 
     /**
@@ -43,8 +35,7 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
      */
     public function testRegexIsCreatedForTemplateWithNoPlaceholders()
     {
-        $this->lexer->setInput('/one/two');
-        $this->assertEquals('#^/one/two$#', $this->parser->parse());
+        $this->assertEquals('#^/one/two$#', $this->parser->parse('/one/two'));
     }
 
     /**
@@ -54,8 +45,7 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
      */
     public function testRegexIsCreatedForTemplateWithPlaceholders()
     {
-        $this->lexer->setInput('/one/{two}/{three}');
-        $this->assertEquals('#^/one/(?P<two>.+?)/(?P<three>.+?)$#', $this->parser->parse());
+        $this->assertEquals('#^/one/(?P<two>.+?)/(?P<three>.+?)$#', $this->parser->parse('/one/{two}/{three}'));
     }
 
 }

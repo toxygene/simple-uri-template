@@ -30,11 +30,14 @@ class UriParser
     /**
      * Parse the template to a URI
      *
+     * @param string $template
      * @param array $parameters
      * @return string
      */
-    public function parse($parameters = [])
+    public function parse($template, $parameters = [])
     {
+        $this->lexer->setInput($template);
+
         $url = '';
 
         while ($this->lexer->moveNext()) {

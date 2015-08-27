@@ -27,11 +27,14 @@ class RegexParser
     /**
      * Parse the template to a regular expression
      *
+     * @param string $template
      * @return string
      * @throws ParserException
      */
-    public function parse()
+    public function parse($template)
     {
+        $this->lexer->setInput($template);
+
         $regex = '';
 
         while ($this->lexer->moveNext()) {
