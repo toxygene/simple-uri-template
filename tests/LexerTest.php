@@ -76,4 +76,85 @@ class LexerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->lexer->isA('asdf', Lexer::T_IDENTIFIER));
     }
 
+    /**
+     * Test lexing a full input tokenizes as expected
+     *
+     * @covers ::getType
+     */
+    public function testLexingInputResultsInTheCorrectTokens()
+    {
+        $this->lexer->setInput('/one/two/{three}/four/{five}');
+        $this->lexer->moveNext();
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_STRING, $this->lexer->token['type']);
+        $this->assertEquals('/one/two/', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_PLACEHOLDER_START, $this->lexer->token['type']);
+        $this->assertEquals('{', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_IDENTIFIER, $this->lexer->token['type']);
+        $this->assertEquals('three', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_PLACEHOLDER_STOP, $this->lexer->token['type']);
+        $this->assertEquals('}', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_STRING, $this->lexer->token['type']);
+        $this->assertEquals('/four/', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_PLACEHOLDER_START, $this->lexer->token['type']);
+        $this->assertEquals('{', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_IDENTIFIER, $this->lexer->token['type']);
+        $this->assertEquals('five', $this->lexer->token['value']);
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_PLACEHOLDER_STOP, $this->lexer->token['type']);
+        $this->assertEquals('}', $this->lexer->token['value']);
+
+        $this->assertNull($this->lexer->lookahead);
+    }
+
+    /**
+     * Test lexing an input without placeholders tokenizes as expected
+     *
+     * @covers ::getType
+     */
+    public function testLexingInputWithoutPlaceholders()
+    {
+        $this->lexer->setInput('/one');
+        $this->lexer->moveNext();
+
+        $this->lexer->moveNext();
+        $this->assertToken(Lexer::T_STRING, $this->lexer->token['type']);
+        $this->assertEquals('/one', $this->lexer->token['value']);
+
+        $this->assertNull($this->lexer->lookahead);
+    }
+
+    /**
+     * Assert an expected token
+     *
+     * @param mixed $expected
+     * @param mixed $actual
+     */
+    private function assertToken($expected, $actual)
+    {
+        $this->assertEquals(
+            $expected,
+            $actual,
+            sprintf(
+                'Expected %s, got %s',
+                $this->lexer->getLiteral($expected),
+                $this->lexer->getLiteral($actual)
+            )
+        );
+    }
+
 }
