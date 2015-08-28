@@ -14,7 +14,23 @@ PLACEHOLDER ::= "{" IDENTIFIER "}"
 ```
 
 ## Regex Examples
-`/one/{two}/three` => `#^/one/(?P<two>.+?)/three$#`
+```php
+use SimpleUriTemplate\Lexer;
+use SimpleUriTemplate\RegexParser;
+
+$lexer = new Lexer();
+$parser = new RegexParser($lexer);
+
+echo $parser->parse('/one/{two}/three'); // #^/one/(?P<two>.+?)/three$#
+```
 
 ## URI Examples
-`/one/{two}/three` + ```['two' => 2]``` => `/one/2/three`
+```php
+use SimpleUriTemplate\Lexer;
+use SimpleUriTemplate\UriParser;
+
+$lexer = new Lexer();
+$parser = new UriParser($lexer);
+
+echo $parser->parse('/one/{two}/three', ['two' => 2]); // /one/2/three
+```
