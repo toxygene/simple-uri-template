@@ -7,7 +7,7 @@ A simple URI templating language with parsers to convert the template to a regul
 
 ## Language Definition
 ```
-   TEMPLATE ::= ( PLACEHOLDER | LITERAL ) *
+   TEMPLATE ::= ( PLACEHOLDER | LITERAL ) { TEMPLATE } *
 PLACEHOLDER ::= "{" IDENTIFIER "}"
  IDENTIFIER ::= [a-zA-Z][a-zA-Z0-9]*
     LITERAL ::= [^{}]+
