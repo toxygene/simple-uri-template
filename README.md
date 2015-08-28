@@ -1,5 +1,7 @@
 # Simple URI Template
-A simple URI templating language with parsers to convert the template to a regular expression and to a complete URI.
+A simple URI template language with a lexer and parsers to output a regular expression or a complete URI.
+
+The primary use case is for assembling and matching path-based routes.
 
 ## Installation
 
