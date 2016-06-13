@@ -1,5 +1,5 @@
 <?php
-namespace SimpleUriTemplate;
+namespace Toxygene\SimpleUriTemplate;
 
 /**
  * Parse the template language to a regular expression
@@ -33,7 +33,8 @@ class RegexParser
      */
     public function parse($template)
     {
-        $this->lexer->setInput($template);
+        $this->lexer
+            ->setInput($template);
 
         $regex = '';
 
@@ -48,7 +49,11 @@ class RegexParser
                     break;
 
                 default:
-                    break;
+                    $this->syntaxError(sprintf(
+                        '%s or %s',
+                        $this->lexer->getLiteral(Lexer::T_PLACEHOLDER_START),
+                        $this->lexer->getLiteral(Lexer::T_STRING)
+                    ));
             }
         }
 

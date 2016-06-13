@@ -7,10 +7,10 @@
         }
     ],
     "autoload": {
-        "psr-4": {"SimpleUriTemplate\\": "src/"}
+        "psr-4": {"Toxygene\\SimpleUriTemplate\\": "src/"}
     },
     "autoload-dev": {
-        "psr-4": {"SimpleUriTemplate\\Test\\": "tests"}
+        "psr-4": {"Toxygene\\SimpleUriTemplate\\Test\\": "tests/"}
     },
     "require": {
         "doctrine/lexer": "^1.0"
