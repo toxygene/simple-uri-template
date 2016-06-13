@@ -19,8 +19,12 @@ class RegexParser
      *
      * @param Lexer $lexer
      */
-    public function __construct(Lexer $lexer)
+    public function __construct(Lexer $lexer = null)
     {
+        if (null === $lexer) {
+            $lexer = new Lexer();
+        }
+
         $this->lexer = $lexer;
     }
 
