@@ -1,5 +1,7 @@
 # Simple URI Template
-A simple URI templating language with parsers to convert the template to a regular expression and to a complete URI.
+A simple URI template language with a lexer and parsers to output a regular expression or a complete URI.
+
+The primary use case is for assembling and matching path-based routes.
 
 ## Installation
 
@@ -7,14 +9,30 @@ A simple URI templating language with parsers to convert the template to a regul
 
 ## Language Definition
 ```
-TEMPLATE ::= ( PLACEHOLDER | LITERAL ) *
+   TEMPLATE ::= ( PLACEHOLDER | LITERAL ) { TEMPLATE } *
 PLACEHOLDER ::= "{" IDENTIFIER "}"
  IDENTIFIER ::= [a-zA-Z][a-zA-Z0-9]*
     LITERAL ::= [^{}]+
 ```
 
 ## Regex Examples
-`/one/{two}/three` => `#^/one/(?P<two>.+?)/three$#`
+```php
+use SimpleUriTemplate\Lexer;
+use SimpleUriTemplate\RegexParser;
+
+$lexer = new Lexer();
+$parser = new RegexParser($lexer);
+
+echo $parser->parse('/one/{two}/three'); // #^/one/(?P<two>.+?)/three$#
+```
 
 ## URI Examples
-`/one/{two}/three` + ```['two' => 2]``` => `/one/2/three`
+```php
+use SimpleUriTemplate\Lexer;
+use SimpleUriTemplate\UriParser;
+
+$lexer = new Lexer();
+$parser = new UriParser($lexer);
+
+echo $parser->parse('/one/{two}/three', ['two' => 2]); // /one/2/three
+```
