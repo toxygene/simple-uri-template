@@ -17,8 +17,8 @@ PLACEHOLDER ::= "{" IDENTIFIER "}"
 
 ## Regex Examples
 ```php
-use SimpleUriTemplate\Lexer;
-use SimpleUriTemplate\RegexParser;
+use Toxygene\SimpleUriTemplate\Lexer;
+use Toxygene\SimpleUriTemplate\RegexParser;
 
 $lexer = new Lexer();
 $parser = new RegexParser($lexer);
@@ -28,8 +28,8 @@ echo $parser->parse('/one/{two}/three'); // #^/one/(?P<two>.+?)/three$#
 
 ## URI Examples
 ```php
-use SimpleUriTemplate\Lexer;
-use SimpleUriTemplate\UriParser;
+use Toxygene\SimpleUriTemplate\Lexer;
+use Toxygene\SimpleUriTemplate\UriParser;
 
 $lexer = new Lexer();
 $parser = new UriParser($lexer);
