@@ -1,14 +1,16 @@
 <?php
-namespace SimpleUriTemplate\Tests;
+namespace Toxygene\SimpleUriTemplate\Tests;
 
 use PHPUnit_Framework_TestCase;
-use SimpleUriTemplate\Lexer;
-use SimpleUriTemplate\RegexParser;
+use Toxygene\SimpleUriTemplate\Lexer;
+use Toxygene\SimpleUriTemplate\ParserException;
+use Toxygene\SimpleUriTemplate\RegexParser;
 
 /**
  * Unit tests for the regex parser
  *
- * @coversDefaultClass \SimpleUriTemplate\RegexParser
+ * @coversDefaultClass \Toxygene\SimpleUriTemplate\RegexParser
+ * @covers ::__construct
  */
 class RegexParserTest extends PHPUnit_Framework_TestCase
 {
@@ -41,11 +43,57 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
     /**
      * Test that the regex is created for a template with placeholders
      *
+     * @covers ::match
      * @covers ::parse
+     * @covers ::parsePlaceholder
      */
     public function testRegexIsCreatedForTemplateWithPlaceholders()
     {
         $this->assertEquals('#^/one/(?P<two>.+?)/(?P<three>.+?)$#', $this->parser->parse('/one/{two}/{three}'));
     }
 
+    /**
+     * Test that invalid syntax throws a syntax error
+     *
+     * @covers ::match
+     * @covers ::parse
+     * @covers ::parsePlaceholder
+     * @covers ::syntaxError
+     */
+    public function testInvalidSyntaxThrowsASyntaxError()
+    {
+        $this->setExpectedException(ParserException::class);
+
+        $this->parser
+            ->parse('{{');
+    }
+
+    /**
+     * Test that invalid syntax at the end of the string throws a syntax error
+     *
+     * @covers ::match
+     * @covers ::parse
+     * @covers ::parsePlaceholder
+     * @covers ::syntaxError
+     */
+    public function testInvalidSyntaxAtTheEndOfTheStringThrowsASyntaxError()
+    {
+        $this->setExpectedException(ParserException::class);
+
+        $this->parser
+            ->parse('test{');
+    }
+
+    /**
+     * Test that an invalid placeholder end throws a syntax error
+
+     * @covers ::parse
+     * @covers ::syntaxError
+     */
+    public function testInvalidPlaceholderEndThrowsASyntaxError()
+    {
+        $this->setExpectedException(ParserException::class);
+
+        $this->parser->parse('}');
+    }
 }

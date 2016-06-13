@@ -1,14 +1,14 @@
 <?php
-namespace SimpleUriTemplate\Tests;
+namespace Toxygene\SimpleUriTemplate\Tests;
 
 use PHPUnit_Framework_TestCase;
-use SimpleUriTemplate\Lexer;
-use SimpleUriTemplate\UriParser;
+use Toxygene\SimpleUriTemplate\Lexer;
+use Toxygene\SimpleUriTemplate\UriParser;
 
 /**
  * Unit tests for the URI parser
  *
- * @coversDefaultClass \SimpleUriTemplate\UriParser
+ * @coversDefaultClass \Toxygene\SimpleUriTemplate\UriParser
  */
 class UriParserTest extends PHPUnit_Framework_TestCase
 {

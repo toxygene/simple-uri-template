@@ -1,13 +1,13 @@
 <?php
-namespace SimpleUriTemplate\Tests;
+namespace Toxygene\SimpleUriTemplate\Tests;
 
 use PHPUnit_Framework_TestCase;
-use SimpleUriTemplate\Lexer;
+use Toxygene\SimpleUriTemplate\Lexer;
 
 /**
  * Unit tests for the lexer
  *
- * @coversDefaultClass \SimpleUriTemplate\Lexer
+ * @coversDefaultClass \Toxygene\SimpleUriTemplate\Lexer
  */
 class LexerTest extends PHPUnit_Framework_TestCase
 {

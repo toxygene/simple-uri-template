@@ -1,5 +1,5 @@
 <?php
-namespace SimpleUriTemplate;
+namespace Toxygene\SimpleUriTemplate;
 
 use Doctrine\Common\Lexer\AbstractLexer;
 
@@ -16,8 +16,8 @@ class Lexer extends AbstractLexer
      */
     const T_PLACEHOLDER_START = 1;
     const T_PLACEHOLDER_STOP  = 2;
-    const T_STRING = 3;
-    const T_IDENTIFIER = 4;
+    const T_STRING            = 3;
+    const T_IDENTIFIER        = 4;
     /**#@-*/
 
     /**
@@ -45,7 +45,10 @@ class Lexer extends AbstractLexer
     protected function getCatchablePatterns()
     {
         return [
-            '[^{}]+'
+            '{',                               // placeholder end
+            '(?<={)[a-zA-Z][a-zA-Z0-9]+(?=})', // identifier
+            '}',                               // placeholder stop
+            '(?<!{)[^{}]+(?!})',               // literal
         ];
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace SimpleUriTemplate;
+namespace Toxygene\SimpleUriTemplate;
 
 use RuntimeException;
 
