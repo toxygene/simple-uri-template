@@ -2,6 +2,7 @@
 namespace Toxygene\SimpleUriTemplate;
 
 use \Exception;
+use Nette\Utils\TokenIterator;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 /**
@@ -11,24 +12,17 @@ class UriParser
 {
 
     /**
-     * Template language lexer
-     *
-     * @var Lexer
+     * Tokenizer
+     * @var Tokenizer
      */
-    private $lexer;
+    private $tokenizer;
 
     /**
      * Constructor
-     *
-     * @param Lexer $lexer
      */
-    public function __construct(Lexer $lexer = null)
+    public function __construct()
     {
-        if (null === $lexer) {
-            $lexer = new Lexer();
-        }
-
-        $this->lexer = $lexer;
+        $this->tokenizer = new Tokenizer();
     }
 
     /**
@@ -40,19 +34,17 @@ class UriParser
      */
     public function parse($template, $parameters = [])
     {
-        $this->lexer->setInput($template);
+        $tokenIterator = new TokenIterator($this->tokenizer->tokenize($template));
 
         $url = '';
 
-        while ($this->lexer->moveNext()) {
-            switch ($this->lexer->lookahead['type']) {
-                case Lexer::T_PLACEHOLDER_START:
-                    $url .= $this->parsePlaceholder($parameters);
-                    break;
-
-                case Lexer::T_STRING:
-                    $url .= $this->lexer->lookahead['value'];
-                    break;
+        while ($tokenIterator->nextToken()) {
+            if ($tokenIterator->isCurrent(Tokenizer::T_PLACEHOLDER_START)) {
+                $url .= $this->parsePlaceholder($tokenIterator, $parameters);
+            } elseif ($tokenIterator->isCurrent(Tokenizer::T_LITERAL)) {
+                $url .= $tokenIterator->currentValue();
+            } else {
+                throw new ParserException();
             }
         }
 
@@ -62,76 +54,37 @@ class UriParser
     /**
      * Parse the placeholder identifier
      *
+     * @param TokenIterator $tokenIterator
      * @param array $parameters
      * @return string
      * @throws ParserException
      */
-    private function parsePlaceholder($parameters)
+    private function parsePlaceholder(TokenIterator $tokenIterator, $parameters)
     {
-        $this->match(Lexer::T_PLACEHOLDER_START)
-            ->match(Lexer::T_IDENTIFIER);
-
-        if (!isset($parameters[$this->lexer->token['value']])) {
-            throw new ParserException(sprintf(
-                'line 0, col %s: Error: %s not found in parameters',
-                $this->lexer->token['position'],
-                $this->lexer->token['value']
-            ));
+        $tokenIterator->nextToken();
+        if (!$tokenIterator->isCurrent(Tokenizer::T_IDENTIFIER)) {
+            throw new \RuntimeException();
         }
 
-        $result = urlencode($parameters[$this->lexer->token['value']]);
+        $value = $tokenIterator->currentValue();
 
-        $this->match(Lexer::T_PLACEHOLDER_STOP, false);
+        if ($tokenIterator->isNext(Tokenizer::T_SEPARATOR)) {
+            $tokenIterator->nextToken();
 
-        return $result;
-    }
+            if (!$tokenIterator->isNext(Tokenizer::T_REGEX)) {
+                throw new ParserException();
+            }
 
-    /**
-     * Assert the next token is of a specified type
-     *
-     * @param string $token
-     * @param boolean $moveNext
-     * @return $this
-     */
-    private function match($token, $moveNext = true)
-    {
-        $lookaheadType = $this->lexer->lookahead['type'];
-
-        if ($lookaheadType !== $token) {
-            $this->syntaxError($this->lexer->getLiteral($token));
+            $tokenIterator->nextToken();
         }
 
-        if ($moveNext) {
-            $this->lexer->moveNext();
+        if (!$tokenIterator->isNext(Tokenizer::T_PLACEHOLDER_END)) {
+            throw new ParserException();
         }
 
-        return $this;
-    }
+        $tokenIterator->nextToken();
 
-    /**
-     * Throw a syntax error
-     *
-     * @param string $expected
-     * @throws ParserException
-     */
-    private function syntaxError($expected)
-    {
-        $token = $this->lexer->lookahead;
-        $tokenPosition = isset($token['position']) ? $token['position'] : '-1';
-
-        $message = sprintf(
-            'line 0, col %s: Error: Expected %s, got ',
-            $tokenPosition,
-            $expected
-        );
-
-        if ($this->lexer->lookahead === null) {
-            $message .= 'end of string';
-        } else {
-            $message .= $this->lexer->getLiteral($token['type']);
-        }
-
-        throw new ParserException($message);
+        return $parameters[$value];
     }
 
 }

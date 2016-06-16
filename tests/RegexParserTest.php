@@ -1,8 +1,7 @@
 <?php
 namespace Toxygene\SimpleUriTemplate\Tests;
 
-use PHPUnit_Framework_TestCase;
-use Toxygene\SimpleUriTemplate\Lexer;
+use PHPUnit_Framework_TestCase as TestCase;
 use Toxygene\SimpleUriTemplate\ParserException;
 use Toxygene\SimpleUriTemplate\RegexParser;
 
@@ -12,7 +11,7 @@ use Toxygene\SimpleUriTemplate\RegexParser;
  * @coversDefaultClass \Toxygene\SimpleUriTemplate\RegexParser
  * @covers ::__construct
  */
-class RegexParserTest extends PHPUnit_Framework_TestCase
+class RegexParserTest extends TestCase
 {
 
     /**
@@ -27,7 +26,7 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->parser = new RegexParser(new Lexer());
+        $this->parser = new RegexParser();
     }
 
     /**
@@ -49,7 +48,7 @@ class RegexParserTest extends PHPUnit_Framework_TestCase
      */
     public function testRegexIsCreatedForTemplateWithPlaceholders()
     {
-        $this->assertEquals('#^/one/(?P<two>.+?)/(?P<three>.+?)$#', $this->parser->parse('/one/{two}/{three}'));
+        $this->assertEquals('#^/one/(?P<two>.+?)/(?P<three>/d+?)$#', $this->parser->parse('/one/{two}/{three:/d+}'));
     }
 
     /**

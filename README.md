@@ -1,38 +1,34 @@
 # Simple URI Template
-A simple URI template language with a lexer and parsers to output a regular expression or a complete URI.
+A simple URI template language with a lexer and parsers to output a regular expression that will match the template or expand the template to a complete string from an array of attributes.
 
 The primary use case is for assembling and matching path-based routes.
 
 ## Installation
-
 `composer install toxygene/simple-uri-template`
 
 ## Language Definition
 ```
-   TEMPLATE ::= ( PLACEHOLDER | LITERAL ) { TEMPLATE } *
-PLACEHOLDER ::= "{" IDENTIFIER "}"
- IDENTIFIER ::= [a-zA-Z][a-zA-Z0-9]*
-    LITERAL ::= [^{}]+
+   TEMPLATE = { EXPANSION | LITERAL }
+  EXPANSION = "{" IDENTIFIER [ ":" REGEXP ] "}"
+ IDENTIFIER = [a-zA-Z][a-zA-Z0-9_-]*
+     REGEXP = [^}]+
+    LITERAL = [^{}]+
 ```
 
 ## Regex Examples
 ```php
-use Toxygene\SimpleUriTemplate\Lexer;
 use Toxygene\SimpleUriTemplate\RegexParser;
 
-$lexer = new Lexer();
-$parser = new RegexParser($lexer);
+$parser = new RegexParser();
 
-echo $parser->parse('/one/{two}/three'); // #^/one/(?P<two>.+?)/three$#
+echo $parser->parse('/one/{two:/d+}/three'); // #^/one/(?P<two>\d+?)/three$#
 ```
 
 ## URI Examples
 ```php
-use Toxygene\SimpleUriTemplate\Lexer;
 use Toxygene\SimpleUriTemplate\UriParser;
 
-$lexer = new Lexer();
-$parser = new UriParser($lexer);
+$parser = new UriParser();
 
 echo $parser->parse('/one/{two}/three', ['two' => 2]); // /one/2/three
 ```

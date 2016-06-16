@@ -13,7 +13,7 @@
         "psr-4": {"Toxygene\\SimpleUriTemplate\\Test\\": "tests/"}
     },
     "require": {
-        "doctrine/lexer": "^1.0"
+        "nette/tokenizer": "^2.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"

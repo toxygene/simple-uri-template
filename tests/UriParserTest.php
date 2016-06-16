@@ -2,7 +2,6 @@
 namespace Toxygene\SimpleUriTemplate\Tests;
 
 use PHPUnit_Framework_TestCase;
-use Toxygene\SimpleUriTemplate\Lexer;
 use Toxygene\SimpleUriTemplate\UriParser;
 
 /**
@@ -25,7 +24,7 @@ class UriParserTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->parser = new UriParser(new Lexer());
+        $this->parser = new UriParser();
     }
 
     /**

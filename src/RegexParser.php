@@ -1,5 +1,11 @@
 <?php
+/**
+ *
+ */
+
 namespace Toxygene\SimpleUriTemplate;
+
+use Nette\Utils\TokenIterator;
 
 /**
  * Parse the template language to a regular expression
@@ -8,56 +14,38 @@ class RegexParser
 {
 
     /**
-     * Template language lexer
-     *
-     * @var Lexer
+     * Tokenizer
+     * @var Tokenizer
      */
-    private $lexer;
+    private $tokenizer;
 
     /**
      * Constructor
-     *
-     * @param Lexer $lexer
      */
-    public function __construct(Lexer $lexer = null)
+    public function __construct()
     {
-        if (null === $lexer) {
-            $lexer = new Lexer();
-        }
-
-        $this->lexer = $lexer;
+        $this->tokenizer = new Tokenizer();
     }
 
     /**
-     * Parse the template to a regular expression
+     * Parse the input to a regular expression
      *
-     * @param string $template
+     * @param string $input
      * @return string
      * @throws ParserException
      */
-    public function parse($template)
+    public function parse($input)
     {
-        $this->lexer
-            ->setInput($template);
+        $tokenIterator = new TokenIterator($this->tokenizer->tokenize($input));
 
         $regex = '';
-
-        while ($this->lexer->moveNext()) {
-            switch ($this->lexer->lookahead['type']) {
-                case Lexer::T_PLACEHOLDER_START:
-                    $regex .= $this->parsePlaceholder();
-                    break;
-
-                case Lexer::T_STRING:
-                    $regex .= $this->lexer->lookahead['value'];
-                    break;
-
-                default:
-                    $this->syntaxError(sprintf(
-                        '%s or %s',
-                        $this->lexer->getLiteral(Lexer::T_PLACEHOLDER_START),
-                        $this->lexer->getLiteral(Lexer::T_STRING)
-                    ));
+        while ($tokenIterator->nextToken()) {
+            if ($tokenIterator->isCurrent(Tokenizer::T_PLACEHOLDER_START)) {
+                $regex .= $this->parsePlaceholder($tokenIterator);
+            } elseif ($tokenIterator->isCurrent(Tokenizer::T_LITERAL)) {
+                $regex .= $tokenIterator->currentValue();
+            } else {
+                throw new ParserException();
             }
         }
 
@@ -65,69 +53,60 @@ class RegexParser
     }
 
     /**
-     * Parse the placeholder identifier
+     * Parse the placeholder
      *
+     * @param TokenIterator $tokenIterator
      * @return string
      * @throws ParserException
      */
-    private function parsePlaceholder()
+    private function parsePlaceholder(TokenIterator $tokenIterator)
     {
-        $this->match(Lexer::T_PLACEHOLDER_START)
-            ->match(Lexer::T_IDENTIFIER);
+        $tokenIterator->nextToken();
+        if (!$tokenIterator->isCurrent(Tokenizer::T_IDENTIFIER)) {
+            throw new ParserException();
+        }
 
-        $regex = '(?P<' . $this->lexer->token['value'] . '>.+?)';
+        $regex = '(?P<' . $tokenIterator->currentValue() . '>';
 
-        $this->match(Lexer::T_PLACEHOLDER_STOP, false);
+        $identifierRegex = $this->parseIdentifierRegex($tokenIterator);
+        if (!$identifierRegex) {
+            $identifierRegex = '.+?';
+        }
 
-        return $regex;
+        $regex .= $identifierRegex;
+
+        if (!$tokenIterator->isNext(Tokenizer::T_PLACEHOLDER_END)) {
+            throw new ParserException();
+        }
+
+        $tokenIterator->nextToken();
+
+        return $regex . ')';
     }
 
     /**
-     * Assert the next token is of a specified type
+     * Parse the optional identifier regex
      *
-     * @param string $token
-     * @param boolean $moveNext
-     * @return $this
+     * @param TokenIterator $tokenIterator
+     * @return NULL|string
      */
-    private function match($token, $moveNext = true)
+    private function parseIdentifierRegex(TokenIterator $tokenIterator)
     {
-        $lookaheadType = $this->lexer->lookahead['type'];
-
-        if ($lookaheadType !== $token) {
-            $this->syntaxError($this->lexer->getLiteral($token));
+        if (!$tokenIterator->isNext(Tokenizer::T_SEPARATOR)) {
+            return '';
         }
 
-        if ($moveNext) {
-            $this->lexer->moveNext();
+        $tokenIterator->nextToken();
+
+        if (!$tokenIterator->isNext(Tokenizer::T_REGEX)) {
+            throw new ParserException();
         }
 
-        return $this;
-    }
+        $tokenIterator->nextToken();
 
-    /**
-     * Throw a syntax error
-     *
-     * @param string $expected
-     * @throws ParserException
-     */
-    private function syntaxError($expected)
-    {
-        $token = $this->lexer->lookahead;
-        $tokenPosition = isset($token['position']) ? $token['position'] : '-1';
+        $regex = $tokenIterator->currentValue();
 
-        $message = sprintf(
-            'line 0, col %s: Error: Expected %s, got ',
-            $tokenPosition,
-            $expected
-        );
-
-        if ($this->lexer->lookahead === null) {
-            $message .= 'end of string';
-        } else {
-            $message .= $this->lexer->getLiteral($token['type']);
-        }
-
-        throw new ParserException($message);
+        return $regex . '?';
     }
 
 }
